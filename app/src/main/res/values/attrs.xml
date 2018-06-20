@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+    <declare-styleable name="TNSpinner">
+        <attr name="dropdown_max_height" format="dimension|reference" />
+        <attr name="dropdown_height" format="dimension|reference" />
+        <attr name="arrow_icon" format="integer|reference" />
+    </declare-styleable>
+
+</resources>
