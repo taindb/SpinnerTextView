@@ -1,18 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <spinner.taindb.vn.tnspinner.TNSpinner
+        android:id="@+id/spinner"
+        android:layout_width="100dp"
+        android:layout_height="@dimen/item_height"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/spinner_item_bg"
+        android:clickable="true"
+        android:enabled="true"
+        android:gravity="center"
+        android:hint="Select"
+        android:textColor="@android:color/white"
+        android:textColorHint="@android:color/white"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:arrow_icon="@drawable/ic_arrow"
+        app:dropdown_height="@dimen/item_height"
+        app:dropdown_max_height="100dp"
+        app:height_wrap_content="true" />
 
-</android.support.constraint.ConstraintLayout>
+</FrameLayout>

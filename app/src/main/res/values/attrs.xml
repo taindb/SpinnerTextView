@@ -6,6 +6,7 @@
         <attr name="dropdown_max_height" format="dimension|reference" />
         <attr name="dropdown_height" format="dimension|reference" />
         <attr name="arrow_icon" format="integer|reference" />
+        <attr name="height_wrap_content" format="boolean|reference"/>
     </declare-styleable>
 
 </resources>

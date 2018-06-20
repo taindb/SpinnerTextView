@@ -16,10 +16,10 @@
   ~
   -->
 
-<rotate
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:drawable="@drawable/ic_vector_down"
-    android:fromDegrees="0"
-    android:pivotX="50%"
-    android:pivotY="50%"
-    android:toDegrees="180"/>
+<resources>
+  <dimen name="padding_left">24dp</dimen>
+  <dimen name="padding_top">12dp</dimen>
+  <dimen name="item_height">34dp</dimen>
+  <dimen name="popup_padding_left">24dp</dimen>
+  <dimen name="popup_padding_top">12dp</dimen>
+</resources>
