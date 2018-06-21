@@ -1,9 +1,11 @@
 package spinner.taindb.vn.tnspinner
 
 import android.animation.ObjectAnimator
+import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Canvas
 import android.graphics.drawable.Drawable
-import android.os.Build
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.AppCompatTextView
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -32,6 +34,10 @@ class TNSpinner : AppCompatTextView, SpinnerAdapter.OnClickItemListener {
 
     private lateinit var mArrowDrawable: Drawable
 
+    private var mCollapseDrawable: Int = -1
+
+    private var mExpandDrawable: Int = -1
+
     private var mDropDownHeight: Int = 0
 
     private var mDropDownMaxHeight: Int = 0
@@ -47,11 +53,9 @@ class TNSpinner : AppCompatTextView, SpinnerAdapter.OnClickItemListener {
     private lateinit var mAdapter: SpinnerAdapter
 
     private val mOnDismissListener = PopupWindow.OnDismissListener {
-        //        if (mNothingSelected && onNothingSelectedListener != null) {
-//            onNothingSelectedListener.onNothingSelected(this@MaterialSpinner)
-//        }
         if (!mHideArrow) {
             animateArrow(false)
+            setBackgroundResource(mCollapseDrawable)
         }
     }
 
@@ -71,6 +75,7 @@ class TNSpinner : AppCompatTextView, SpinnerAdapter.OnClickItemListener {
         mAdapter.setItem(items)
         mSelectedIndex = 0
         text = items[mSelectedIndex]
+        mAdapter.notifyItemSelected(text.toString(), mSelectedIndex)
     }
 
     fun setDropDownHeight(height: Int) {
@@ -83,13 +88,16 @@ class TNSpinner : AppCompatTextView, SpinnerAdapter.OnClickItemListener {
         mPopupWindow.height = calculatePopupWindowHeight()
     }
 
-    fun expand() {
+    private fun expand() {
+        setBackgroundResource(mExpandDrawable)
         if (!mHideArrow) animateArrow(true)
         mNothingSelected = true
         mPopupWindow.showAsDropDown(this)
+
     }
 
-    fun collapse() {
+    private fun collapse() {
+        setBackgroundResource(mCollapseDrawable)
         if (!mHideArrow) animateArrow(false)
         mPopupWindow.dismiss()
     }
@@ -101,6 +109,8 @@ class TNSpinner : AppCompatTextView, SpinnerAdapter.OnClickItemListener {
             mDropDownMaxHeight = getDimensionPixelSize(R.styleable.TNSpinner_dropdown_max_height, 0)
             mArrowDrawable = getDrawable(R.styleable.TNSpinner_arrow_icon).mutate()
             mHeightWrapContent = getBoolean(R.styleable.TNSpinner_height_wrap_content, false)
+            mCollapseDrawable = getResourceId(R.styleable.TNSpinner_collapse_background, -1)
+            mExpandDrawable = getResourceId(R.styleable.TNSpinner_expand_background, -1)
             setCompoundDrawablesWithIntrinsicBounds(null, null, mArrowDrawable, null)
             this.recycle()
         }
@@ -117,6 +127,7 @@ class TNSpinner : AppCompatTextView, SpinnerAdapter.OnClickItemListener {
 
     private fun createListView(context: Context?) = RecyclerView(context).apply {
         layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        addItemDecoration(ItemDivider(ContextCompat.getDrawable(context!!, R.drawable.item_divider_line_bg)!!))
         adapter = mAdapter
         mAdapter.setListener(this@TNSpinner)
     }
@@ -126,12 +137,7 @@ class TNSpinner : AppCompatTextView, SpinnerAdapter.OnClickItemListener {
         this.isOutsideTouchable = true
         this.isFocusable = true
         this.setOnDismissListener(mOnDismissListener)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            this.elevation = 16f
-            this.setBackgroundDrawable(context?.getDrawable(R.drawable.drop_down))
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            this.setBackgroundDrawable(context?.getDrawable(R.drawable.drop_down_shadow))
-        }
+        this.setBackgroundDrawable(android.support.v4.content.ContextCompat.getDrawable(context!!, R.drawable.drop_down_bg))
     }
 
     private fun calculatePopupWindowHeight(): Int {
@@ -139,7 +145,7 @@ class TNSpinner : AppCompatTextView, SpinnerAdapter.OnClickItemListener {
         var listViewHeight = mAdapter.itemCount * itemHeight
 
         if (mHeightWrapContent) return listViewHeight
-        else if (mDropDownMaxHeight > 0 && listViewHeight > mDropDownMaxHeight) {
+        else if (mDropDownMaxHeight in 1..(listViewHeight - 1)) {
             return mDropDownMaxHeight
         } else if (mDropDownHeight != WindowManager.LayoutParams.MATCH_PARENT
                 && mDropDownHeight != WindowManager.LayoutParams.WRAP_CONTENT
@@ -153,8 +159,8 @@ class TNSpinner : AppCompatTextView, SpinnerAdapter.OnClickItemListener {
     }
 
     private fun animateArrow(shouldRotateUp: Boolean) {
-        val start = if (shouldRotateUp) 0 else 1000
-        val end = if (shouldRotateUp) 1000 else 0
+        val start = if (shouldRotateUp) 0 else 10000
+        val end = if (shouldRotateUp) 10000 else 0
         ObjectAnimator.ofInt(mArrowDrawable, "level", start, end).start()
     }
 
@@ -166,7 +172,7 @@ class TNSpinner : AppCompatTextView, SpinnerAdapter.OnClickItemListener {
             var currentText = text
             var longestItem = text.toString()
 
-            mAdapter.getItems().forEach {
+            mAdapter.getFullItems().forEach {
                 if (it.length > longestItem.length) {
                     longestItem = it
                 }
@@ -178,6 +184,7 @@ class TNSpinner : AppCompatTextView, SpinnerAdapter.OnClickItemListener {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent?): Boolean {
         if (event?.action == MotionEvent.ACTION_UP) {
             if (isEnabled && isClickable) {
@@ -192,13 +199,37 @@ class TNSpinner : AppCompatTextView, SpinnerAdapter.OnClickItemListener {
         return super.onTouchEvent(event)
     }
 
-    private lateinit var mTextPrev: String
-
-    private var mPosPrev: Int = -1
-
     override fun onItemClick(text: String, position: Int) {
         setText(text)
         collapse()
+        mAdapter.notifyItemSelected(text, position)
     }
 
+
+    /**
+     * [ItemDivider]
+     */
+   private class ItemDivider(dividerDrawable: Drawable) : RecyclerView.ItemDecoration() {
+        private val mDividerDrawable = dividerDrawable
+
+        override fun onDrawOver(c: Canvas?, parent: RecyclerView?, state: RecyclerView.State?) {
+            super.onDrawOver(c, parent, state)
+            val left = parent?.paddingLeft
+            val right = parent?.width!! - parent.paddingRight
+
+            val childCount = parent.childCount
+            for (i in 0 until childCount) {
+                val child = parent.getChildAt(i)
+
+                val params = child.layoutParams as RecyclerView.LayoutParams
+
+                val top = child.bottom + params.bottomMargin
+                val bottom = top + mDividerDrawable.intrinsicHeight
+
+                mDividerDrawable.setBounds(left!!, top, right, bottom)
+                mDividerDrawable.draw(c)
+            }
+        }
+
+    }
 }

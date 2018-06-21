@@ -14,37 +14,48 @@ import android.widget.TextView
  */
 class SpinnerAdapter : RecyclerView.Adapter<SpinnerAdapter.ItemViewHolder>() {
 
-    private lateinit var mItems: List<String>
+    private var mItems = mutableListOf<String>()
+
+    private var mFullItems = mutableListOf<String>()
 
     private lateinit var mListener: OnClickItemListener
 
-    private var mPrevPosition: Int = -1
-
-    private var mPrevItems = mutableListOf<String>()
+    private var mOldPositionOld: Int = -1
 
     fun setListener(listener: OnClickItemListener) {
         mListener = listener
     }
 
     fun setItem(items: List<String>) {
-        mItems = items.toMutableList()
+        mFullItems.clear()
+        mFullItems.addAll(items)
+        mItems.clear()
+        mItems.addAll(mFullItems)
         notifyDataSetChanged()
     }
 
-    fun getItems(): List<String> {
-        return mItems
+    fun getFullItems(): List<String> {
+        return mFullItems
     }
 
-    fun notifyItemSelected(position: Int) {
-        if (position <= -1 || position >= itemCount) return
-        mPrevPosition = position
-        if (mPrevItems.isEmpty()) {
-             notifyItemRemoved(position)
-        } else {
-
+    fun notifyItemSelected(item: String, position: Int) {
+        var correctIndex = position
+        if (mOldPositionOld - 1 == correctIndex) {
+            correctIndex--
+        } else if (position >= itemCount) {
+            correctIndex--
+        } else if (position in 1..(itemCount - 1)) {
+            correctIndex++
+        } else if (position == 0) {
+            if (!item.contentEquals(mFullItems[0])) {
+                correctIndex++
+            }
         }
-
-
+        mItems.clear()
+        mItems.addAll(mFullItems)
+        mItems.removeAt(correctIndex)
+        notifyDataSetChanged()
+        mOldPositionOld = position
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
@@ -79,6 +90,9 @@ class SpinnerAdapter : RecyclerView.Adapter<SpinnerAdapter.ItemViewHolder>() {
             mPosition = position
         }
 
+        fun setBackground(background: Int) {
+            mTextTv.setBackgroundResource(background)
+        }
 
         override fun onClick(v: View?) {
             mListener.onItemClick(mText, mPosition)
@@ -93,7 +107,9 @@ class SpinnerAdapter : RecyclerView.Adapter<SpinnerAdapter.ItemViewHolder>() {
 
     }
 
+
     interface OnClickItemListener {
         fun onItemClick(text: String, position: Int)
     }
+
 }

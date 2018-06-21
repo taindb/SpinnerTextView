@@ -8,21 +8,21 @@
 
     <spinner.taindb.vn.tnspinner.TNSpinner
         android:id="@+id/spinner"
-        android:layout_width="100dp"
+        android:layout_width="300dp"
         android:layout_height="@dimen/item_height"
         android:layout_gravity="center_horizontal"
-        android:background="@drawable/spinner_item_bg"
+        android:background="@drawable/spinner_item_collapse_bg"
         android:clickable="true"
         android:enabled="true"
         android:gravity="center"
-        android:hint="Select"
         android:textColor="@android:color/white"
-        android:textColorHint="@android:color/white"
         android:textSize="16sp"
         android:textStyle="bold"
         app:arrow_icon="@drawable/ic_arrow"
+        app:collapse_background="@drawable/spinner_item_collapse_bg"
         app:dropdown_height="@dimen/item_height"
         app:dropdown_max_height="100dp"
+        app:expand_background="@drawable/spinner_item_expand_bg"
         app:height_wrap_content="true" />
 
 </FrameLayout>

@@ -10,7 +10,13 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         var spinner = findViewById<TNSpinner>(R.id.spinner)
-        spinner.setListItems(listOf("Android", "iOS", "Java", "Kotlin"))
-      //  spinner.expand()
+        spinner.setListItems(listOf(
+                "0 - Google Pixel"
+                , "1 - SamSung"
+                , "2 - Sony"
+                , "3 - LG"
+                , "4 - Nokia"
+                , "5 - Oppo"
+                , "6 - Asus"))
     }
 }
