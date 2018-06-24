@@ -1,11 +1,10 @@
-package spinner.taindb.vn.tnspinner
+package  vn.taindb.tnspinner
 
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-
 
 /**
  * Created by Taindb
@@ -16,46 +15,34 @@ class SpinnerAdapter : RecyclerView.Adapter<SpinnerAdapter.ItemViewHolder>() {
 
     private var mItems = mutableListOf<String>()
 
-    private var mFullItems = mutableListOf<String>()
-
     private lateinit var mListener: OnClickItemListener
 
-    private var mOldPositionOld: Int = -1
+    private var mItemSelected: Int = -1
+
+    private var mHintTextEnable: Boolean = false
+
 
     fun setListener(listener: OnClickItemListener) {
         mListener = listener
     }
 
+    fun enableHintText(enable: Boolean) {
+        mHintTextEnable = enable
+    }
+
     fun setItem(items: List<String>) {
-        mFullItems.clear()
-        mFullItems.addAll(items)
         mItems.clear()
-        mItems.addAll(mFullItems)
+        mItems.addAll(items)
         notifyDataSetChanged()
     }
 
     fun getFullItems(): List<String> {
-        return mFullItems
+        return mItems
     }
 
-    fun notifyItemSelected(item: String, position: Int) {
-        var correctIndex = position
-        if (mOldPositionOld - 1 == correctIndex) {
-            correctIndex--
-        } else if (position >= itemCount) {
-            correctIndex--
-        } else if (position in 1..(itemCount - 1)) {
-            correctIndex++
-        } else if (position == 0) {
-            if (!item.contentEquals(mFullItems[0])) {
-                correctIndex++
-            }
-        }
-        mItems.clear()
-        mItems.addAll(mFullItems)
-        mItems.removeAt(correctIndex)
+    fun notifyItemSelected(position: Int) {
+        mItemSelected = position
         notifyDataSetChanged()
-        mOldPositionOld = position
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
@@ -63,11 +50,17 @@ class SpinnerAdapter : RecyclerView.Adapter<SpinnerAdapter.ItemViewHolder>() {
     }
 
     override fun getItemCount(): Int {
-        return mItems.size
+        return if (mHintTextEnable)
+            mItems.size
+        else mItems.size - 1
     }
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
-        holder.setText(mItems[position], position)
+        if (position >= mItemSelected && mItemSelected != -1) {
+            holder.setText(mItems[position + 1], position + 1)
+        } else {
+            holder.setText(mItems[position], position)
+        }
     }
 
 
@@ -80,7 +73,7 @@ class SpinnerAdapter : RecyclerView.Adapter<SpinnerAdapter.ItemViewHolder>() {
 
         private var mPosition: Int = 0
 
-        private lateinit var mTextTv: TextView
+        lateinit var mTextTv: TextView
 
         private var mListener: OnClickItemListener = listener
 
@@ -88,10 +81,6 @@ class SpinnerAdapter : RecyclerView.Adapter<SpinnerAdapter.ItemViewHolder>() {
             mText = text
             mTextTv.text = mText
             mPosition = position
-        }
-
-        fun setBackground(background: Int) {
-            mTextTv.setBackgroundResource(background)
         }
 
         override fun onClick(v: View?) {
@@ -104,7 +93,6 @@ class SpinnerAdapter : RecyclerView.Adapter<SpinnerAdapter.ItemViewHolder>() {
                 mTextTv.setOnClickListener(this@ItemViewHolder)
             }
         }
-
     }
 
 

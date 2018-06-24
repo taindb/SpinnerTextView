@@ -1,10 +1,12 @@
-package spinner.taindb.vn.tnspinner
+package vn.taindb.tnspinner
 
 import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.drawable.Drawable
+import android.os.Bundle
+import android.os.Parcelable
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.AppCompatTextView
 import android.support.v7.widget.LinearLayoutManager
@@ -20,13 +22,7 @@ import android.widget.PopupWindow
  * on 6/20/18.
  * QUOINE Pte. Ltd
  */
-class TNSpinner : AppCompatTextView, SpinnerAdapter.OnClickItemListener {
-
-    private val SELECTED_INDEX = "selected_index"
-
-    private val NOTHING_SELECTED = "nothing_selected"
-
-    private val IS_POPUP_SHOWING = "is_popup_showing"
+class SpinnerTextView : AppCompatTextView, SpinnerAdapter.OnClickItemListener {
 
     private lateinit var mPopupWindow: PopupWindow
 
@@ -50,7 +46,11 @@ class TNSpinner : AppCompatTextView, SpinnerAdapter.OnClickItemListener {
 
     private var mHeightWrapContent: Boolean = false
 
+    private var mEnableHintText: Boolean = false
+
     private lateinit var mAdapter: SpinnerAdapter
+
+    private lateinit var mListener: SpinnerAdapter.OnClickItemListener
 
     private val mOnDismissListener = PopupWindow.OnDismissListener {
         if (!mHideArrow) {
@@ -73,9 +73,16 @@ class TNSpinner : AppCompatTextView, SpinnerAdapter.OnClickItemListener {
 
     fun setListItems(items: List<String>) {
         mAdapter.setItem(items)
-        mSelectedIndex = 0
-        text = items[mSelectedIndex]
-        mAdapter.notifyItemSelected(text.toString(), mSelectedIndex)
+        if (!mEnableHintText) {
+            mSelectedIndex = 0
+            text = items[mSelectedIndex]
+            mAdapter.notifyItemSelected(mSelectedIndex)
+        }
+
+    }
+
+    fun setOnItemSeletedListener(listener: SpinnerAdapter.OnClickItemListener) {
+        mListener = listener
     }
 
     fun setDropDownHeight(height: Int) {
@@ -104,13 +111,14 @@ class TNSpinner : AppCompatTextView, SpinnerAdapter.OnClickItemListener {
 
     private fun init(context: Context?, attrRes: AttributeSet?) {
         mNothingSelected = true
-        context?.obtainStyledAttributes(attrRes, R.styleable.TNSpinner)?.run {
-            mDropDownHeight = getLayoutDimension(R.styleable.TNSpinner_dropdown_height, WindowManager.LayoutParams.WRAP_CONTENT)
-            mDropDownMaxHeight = getDimensionPixelSize(R.styleable.TNSpinner_dropdown_max_height, 0)
-            mArrowDrawable = getDrawable(R.styleable.TNSpinner_arrow_icon).mutate()
-            mHeightWrapContent = getBoolean(R.styleable.TNSpinner_height_wrap_content, false)
-            mCollapseDrawable = getResourceId(R.styleable.TNSpinner_collapse_background, -1)
-            mExpandDrawable = getResourceId(R.styleable.TNSpinner_expand_background, -1)
+        context?.obtainStyledAttributes(attrRes, R.styleable.SpinnerTextView)?.run {
+            mDropDownHeight = getLayoutDimension(R.styleable.SpinnerTextView_dropdown_height, WindowManager.LayoutParams.WRAP_CONTENT)
+            mDropDownMaxHeight = getDimensionPixelSize(R.styleable.SpinnerTextView_dropdown_max_height, 0)
+            mArrowDrawable = getDrawable(R.styleable.SpinnerTextView_arrow_icon).mutate()
+            mHeightWrapContent = getBoolean(R.styleable.SpinnerTextView_height_wrap_content, false)
+            mCollapseDrawable = getResourceId(R.styleable.SpinnerTextView_collapse_background, -1)
+            mExpandDrawable = getResourceId(R.styleable.SpinnerTextView_expand_background, -1)
+            mEnableHintText = getBoolean(R.styleable.SpinnerTextView_enable_hint_text, false)
             setCompoundDrawablesWithIntrinsicBounds(null, null, mArrowDrawable, null)
             this.recycle()
         }
@@ -129,7 +137,8 @@ class TNSpinner : AppCompatTextView, SpinnerAdapter.OnClickItemListener {
         layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         addItemDecoration(ItemDivider(ContextCompat.getDrawable(context!!, R.drawable.item_divider_line_bg)!!))
         adapter = mAdapter
-        mAdapter.setListener(this@TNSpinner)
+        mAdapter.setListener(this@SpinnerTextView)
+        mAdapter.enableHintText(mEnableHintText)
     }
 
     private fun createPopupWindow(context: Context?) = PopupWindow(context).apply {
@@ -167,20 +176,6 @@ class TNSpinner : AppCompatTextView, SpinnerAdapter.OnClickItemListener {
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         mPopupWindow.width = MeasureSpec.getSize(widthMeasureSpec)
         mPopupWindow.height = calculatePopupWindowHeight()
-
-        if (mAdapter != null) {
-            var currentText = text
-            var longestItem = text.toString()
-
-            mAdapter.getFullItems().forEach {
-                if (it.length > longestItem.length) {
-                    longestItem = it
-                }
-            }
-            text = longestItem
-            super.onMeasure(widthMeasureSpec, heightMeasureSpec)
-            text = currentText
-        }
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
     }
 
@@ -202,14 +197,19 @@ class TNSpinner : AppCompatTextView, SpinnerAdapter.OnClickItemListener {
     override fun onItemClick(text: String, position: Int) {
         setText(text)
         collapse()
-        mAdapter.notifyItemSelected(text, position)
+        mAdapter.enableHintText(false)
+        mAdapter.notifyItemSelected(position)
+        mListener.onItemClick(text, position)
+        if (mEnableHintText) {
+            mEnableHintText = false
+            mPopupWindow.height = calculatePopupWindowHeight()
+        }
     }
-
 
     /**
      * [ItemDivider]
      */
-   private class ItemDivider(dividerDrawable: Drawable) : RecyclerView.ItemDecoration() {
+    private class ItemDivider(dividerDrawable: Drawable) : RecyclerView.ItemDecoration() {
         private val mDividerDrawable = dividerDrawable
 
         override fun onDrawOver(c: Canvas?, parent: RecyclerView?, state: RecyclerView.State?) {

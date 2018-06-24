@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    android:layout_height="match_parent">
 
-    <spinner.taindb.vn.tnspinner.TNSpinner
+    <vn.taindb.tnspinner.SpinnerTextView
         android:id="@+id/spinner"
         android:layout_width="300dp"
         android:layout_height="@dimen/item_height"
@@ -14,6 +12,8 @@
         android:background="@drawable/spinner_item_collapse_bg"
         android:clickable="true"
         android:enabled="true"
+        android:hint="[Select a Android Model...]"
+        android:textColorHint="#85ffffff"
         android:gravity="center"
         android:textColor="@android:color/white"
         android:textSize="16sp"
@@ -22,6 +22,7 @@
         app:collapse_background="@drawable/spinner_item_collapse_bg"
         app:dropdown_height="@dimen/item_height"
         app:dropdown_max_height="100dp"
+        app:enable_hint_text="true"
         app:expand_background="@drawable/spinner_item_expand_bg"
         app:height_wrap_content="true" />
 
