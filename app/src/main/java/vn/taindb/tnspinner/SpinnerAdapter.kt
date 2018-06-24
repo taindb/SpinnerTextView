@@ -9,7 +9,7 @@ import android.widget.TextView
 /**
  * Created by Taindb
  * on 6/20/18.
- * QUOINE Pte. Ltd
+ * taindb@gmail.com
  */
 class SpinnerAdapter : RecyclerView.Adapter<SpinnerAdapter.ItemViewHolder>() {
 
