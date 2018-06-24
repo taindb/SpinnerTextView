@@ -20,7 +20,7 @@ import android.widget.PopupWindow
 /**
  * Created by Taindb
  * on 6/20/18.
- * QUOINE Pte. Ltd
+ * taindb@gmail.com
  */
 class SpinnerTextView : AppCompatTextView, SpinnerAdapter.OnClickItemListener {
 
