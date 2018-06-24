@@ -1,5 +1,6 @@
 # TNSpinner
-A CustomView like Spinner using Kotlin and TextView
+- A CustomView like Spinner using Kotlin and TextView. Not Spinner of Android SDK
+- Very easy to custom display item and drop down item from designer or your custom.
 
 ## Demo
 <img src="https://i.imgur.com/Cmn1Z7Q.gif" width="200" height="400" />
@@ -27,10 +28,15 @@ A CustomView like Spinner using Kotlin and TextView
         app:height_wrap_content="true" />
 ``` 
 
+TODO 
+--------
+If you want to suggest better implementation or you have found some mistakes in this project, please tell me at [issue](https://github.com/taindb/TNSpinner/issues)
+
+
 License
 --------
 
-    Copyright (C) 2016 Jared Rummler
+    Copyright (C) 2018 Tai Nguyen 
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
