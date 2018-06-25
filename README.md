@@ -1,6 +1,6 @@
 # TNSpinner
-- A CustomView like Spinner using Kotlin and TextView. Not Spinner of Android SDK
-- Very easy to custom display item and drop down item from designer or your custom.
+- A CustomView likes Spinner using Kotlin and TextView. Not Spinner of Android SDK
+- Very easy to custom an item and drop down item from designer or your custom.
 
 ## Demo
 <img src="https://i.imgur.com/Cmn1Z7Q.gif" width="200" height="400" />
