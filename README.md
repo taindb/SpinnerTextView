@@ -3,29 +3,32 @@
 - Very easy to custom an item and drop down item from designer or your custom.
 
 ## Demo
-<img src="https://i.imgur.com/Cmn1Z7Q.gif" width="200" height="400" />
+<a href="https://imgur.com/Yabk6Ch"><img src="https://i.imgur.com/Yabk6Ch.gif" title="source: imgur.com" width="340" height="600"/></a>
 
 ## Usage
 
 ```xml
-<vn.taindb.tnspinner.SpinnerTextView
+ <vn.taindb.tnspinner.SpinnerTextView
         android:id="@+id/spinner"
         android:layout_width="300dp"
         android:layout_height="@dimen/item_height"
+        android:layout_gravity="center_horizontal"
         android:background="@drawable/spinner_item_collapse_bg"
         android:clickable="true"
         android:enabled="true"
-        android:hint="[Select a Android Model...]"
-        android:textColorHint="#85ffffff"
         android:gravity="center"
+        android:hint="[Select an Android Model...]"
         android:textColor="@android:color/white"
+        android:textColorHint="#85ffffff"
+        android:textSize="16sp"
+        android:textStyle="bold"
         app:arrow_icon="@drawable/ic_arrow"
-        app:collapse_background="@drawable/spinner_item_collapse_bg"
-        app:dropdown_height="@dimen/item_height"
+        app:collapse_item_display_background="@drawable/spinner_item_collapse_bg"
+        app:dropdown_item_height="@dimen/item_height"
         app:dropdown_max_height="100dp"
-        app:enable_hint_text="true"
-        app:expand_background="@drawable/spinner_item_expand_bg"
-        app:height_wrap_content="true" />
+        app:drop_down_list_background="@drawable/drop_down_bg"
+        app:expand_item_display_background="@drawable/spinner_item_expand_bg"
+        app:hint_text_enable="true" />
 ``` 
 
 TODO 
