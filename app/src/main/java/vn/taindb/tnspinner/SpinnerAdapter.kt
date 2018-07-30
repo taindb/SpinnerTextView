@@ -11,93 +11,53 @@ import android.widget.TextView
  * on 6/20/18.
  * taindb@gmail.com
  */
-class SpinnerAdapter : RecyclerView.Adapter<SpinnerAdapter.ItemViewHolder>() {
+class SpinnerAdapter : SpinnerTextViewBaseAdapter<String>() {
 
-    private var mItems = mutableListOf<String>()
+    private lateinit var mListener: OnItemSelectedListener
 
-    private lateinit var mListener: OnClickItemListener
-
-    private var mItemSelected: Int = -1
-
-    private var mHintTextEnable: Boolean = false
-
-
-    fun setListener(listener: OnClickItemListener) {
+    fun setListener(listener: OnItemSelectedListener) {
         mListener = listener
     }
 
-    fun enableHintText(enable: Boolean) {
-        mHintTextEnable = enable
-    }
-
-    fun setItem(items: List<String>) {
-        mItems.clear()
-        mItems.addAll(items)
-        notifyDataSetChanged()
-    }
-
-    fun getFullItems(): List<String> {
-        return mItems
-    }
-
-    fun notifyItemSelected(position: Int) {
-        mItemSelected = position
-        notifyDataSetChanged()
-    }
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
+    override fun getCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return ItemViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_spinner, parent, false), mListener)
     }
 
-    override fun getItemCount(): Int {
-        return if (mHintTextEnable)
-            mItems.size
-        else mItems.size - 1
-    }
-
-    override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
-        if (position >= mItemSelected && mItemSelected != -1) {
-            holder.setText(mItems[position + 1], position + 1)
-        } else {
-            holder.setText(mItems[position], position)
+    override fun getBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        if (holder is ItemViewHolder) {
+            holder.setData(getItemForBindView(position), getPosition(position))
         }
     }
-
 
     /***
      * [ItemViewHolder]
      */
-    class ItemViewHolder(itemView: View?, listener: OnClickItemListener) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
-
-        private lateinit var mText: String
+    class ItemViewHolder(itemView: View?, listener: OnItemSelectedListener) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
+        private lateinit var mItem: String
 
         private var mPosition: Int = 0
 
-        lateinit var mTextTv: TextView
+        private lateinit var mTextTv: TextView
 
-        private var mListener: OnClickItemListener = listener
+        private var mListener: OnItemSelectedListener = listener
 
-        fun setText(text: String, position: Int) {
-            mText = text
-            mTextTv.text = mText
+        fun setData( item: String, position: Int) {
+            mItem = item
+            mTextTv.text = item
             mPosition = position
         }
 
         override fun onClick(v: View?) {
-            mListener.onItemClick(mText, mPosition)
+            mListener.onItemSelected(mItem, mItem, mPosition)
         }
 
         init {
             itemView?.run {
-                mTextTv = findViewById(R.id.text_tv)
+                mTextTv = itemView as TextView
                 mTextTv.setOnClickListener(this@ItemViewHolder)
             }
         }
     }
 
-
-    interface OnClickItemListener {
-        fun onItemClick(text: String, position: Int)
-    }
 
 }

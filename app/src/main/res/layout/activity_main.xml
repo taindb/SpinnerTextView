@@ -12,18 +12,18 @@
         android:background="@drawable/spinner_item_collapse_bg"
         android:clickable="true"
         android:enabled="true"
-        android:hint="[Select a Android Model...]"
-        android:textColorHint="#85ffffff"
         android:gravity="center"
+        android:hint="[Select an Android Model...]"
         android:textColor="@android:color/white"
+        android:textColorHint="#85ffffff"
         android:textSize="16sp"
         android:textStyle="bold"
         app:arrow_icon="@drawable/ic_arrow"
-        app:collapse_background="@drawable/spinner_item_collapse_bg"
-        app:dropdown_height="@dimen/item_height"
+        app:collapse_item_display_background="@drawable/spinner_item_collapse_bg"
+        app:dropdown_item_height="@dimen/item_height"
         app:dropdown_max_height="100dp"
-        app:enable_hint_text="true"
-        app:expand_background="@drawable/spinner_item_expand_bg"
-        app:height_wrap_content="true" />
+        app:drop_down_list_background="@drawable/drop_down_bg"
+        app:expand_item_display_background="@drawable/spinner_item_expand_bg"
+        app:hint_text_enable="true" />
 
 </FrameLayout>
