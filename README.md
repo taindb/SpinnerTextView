@@ -3,7 +3,7 @@
 - Very easy to custom an item and drop down item from designer or your custom.
 
 ## Demo
-<a href="https://imgur.com/Yabk6Ch"><img src="https://i.imgur.com/Yabk6Ch.gif" title="source: imgur.com" width="340" height="600"/></a>
+<img src="https://i.imgur.com/Yabk6Ch.gif" width="320" height="600" />
 
 ## Usage
 
